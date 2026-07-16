@@ -1,0 +1,14 @@
+{
+  "name": "shop-eda",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @shop-eda/api run start:dev",
+    "build": "pnpm --filter @shop-eda/api run build",
+    "start": "pnpm --filter @shop-eda/api run start:prod",
+    "start:dev": "pnpm --filter @shop-eda/api run start:dev",
+    "start:debug": "pnpm --filter @shop-eda/api run start:debug",
+    "lint": "pnpm --filter @shop-eda/api run lint",
+    "test": "pnpm --filter @shop-eda/api run test",
+    "test:e2e": "pnpm --filter @shop-eda/api run test:e2e"
+  }
+}
