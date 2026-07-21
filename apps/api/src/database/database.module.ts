@@ -14,8 +14,8 @@ import { EnvironmentVariables } from '../config/env.validation';
         user: config.get<string>('DB_USERNAME', 'postgres'),
         password: config.get<string>('DB_PASSWORD', 'postgres'),
         dbName: config.get<string>('DB_NAME', 'shop_eda'),
-        entities: ['./dist/entities'],
-        entitiesTs: ['./src/entities'],
+        entities: ['./dist/shared/entities', './dist/users'],
+        entitiesTs: ['./src/shared/entities', './src/users'],
         debug: config.get<string>('NODE_ENV') === 'development',
         allowGlobalContext: true,
         discovery: {
