@@ -7,7 +7,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { AppModule } from './app.module';
+import { AppModule } from './app/app.module';
 import { EnvironmentVariables } from './config/env.validation';
 
 const numCPUs = os.cpus().length;
