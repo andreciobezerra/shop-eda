@@ -8,7 +8,7 @@ import { EnvironmentVariables } from '../config/env.validation';
     MikroOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService<EnvironmentVariables, true>) => ({
-        type: 'postgresql',
+        driver: require('@mikro-orm/postgresql') as any,
         host: config.get<string>('DB_HOST', 'localhost'),
         port: config.get<number>('DB_PORT', 5432),
         user: config.get<string>('DB_USERNAME', 'postgres'),
