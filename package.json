@@ -9,6 +9,17 @@
     "start:debug": "pnpm --filter @shop-eda/api run start:debug",
     "lint": "pnpm --filter @shop-eda/api run lint",
     "test": "pnpm --filter @shop-eda/api run test",
-    "test:e2e": "pnpm --filter @shop-eda/api run test:e2e"
+    "test:e2e": "pnpm --filter @shop-eda/api run test:e2e",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0"
+  },
+  "lint-staged": {
+    "apps/api/**/*.{ts,tsx}": [
+      "pnpm --filter @shop-eda/api run lint",
+      "pnpm --filter @shop-eda/api run format"
+    ]
   }
 }

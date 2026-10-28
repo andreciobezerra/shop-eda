@@ -9,8 +9,8 @@ services:
     env_file:
       - ./apps/api/.env
     environment:
-      DB_HOST: postgres
-      PORT: 3000
+      DB_HOST: ${DB_HOST:-postgres}
+      PORT: ${PORT:-3000}
     depends_on:
       postgres:
         condition: service_healthy
@@ -23,23 +23,23 @@ services:
     container_name: shop-eda-db
     ports:
       - '5432:5432'
+    env_file:
+      - ./apps/api/.env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: shop_eda
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_HOST: postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./apps/api/postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres -d shop_eda']
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d ${DB_NAME}']
       interval: 5s
       timeout: 5s
       retries: 5
     restart: unless-stopped
     networks:
       - shop-eda
-
-volumes:
-  postgres_data:
 
 networks:
   shop-eda:
