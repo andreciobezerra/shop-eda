@@ -1,14 +1,14 @@
-import cluster from 'node:cluster';
-import os from 'node:os';
-import process from 'node:process';
+import cluster from "node:cluster";
+import os from "node:os";
+import process from "node:process";
 import {
   FastifyAdapter,
   NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { NestFactory } from '@nestjs/core';
-import { ConfigService } from '@nestjs/config';
-import { AppModule } from './app/app.module';
-import { EnvironmentVariables } from './config/env.validation';
+} from "@nestjs/platform-fastify";
+import { NestFactory } from "@nestjs/core";
+import { ConfigService } from "@nestjs/config";
+import { AppModule } from "./app/app.module";
+import { EnvironmentVariables } from "./config/env.validation";
 
 const numCPUs = os.cpus().length;
 
@@ -18,20 +18,21 @@ async function bootstrap(): Promise<void> {
     new FastifyAdapter({ logger: true }),
   );
 
-  const configService = app.get<ConfigService<EnvironmentVariables, true>>(ConfigService);
-  const port = configService.get<number>('PORT', 3000);
-  const apiPrefix = configService.get<string>('API_PREFIX', 'api');
-  const corsOrigin = configService.get<string>('CORS_ORIGIN', '*');
+  const configService =
+    app.get<ConfigService<EnvironmentVariables, true>>(ConfigService);
+  const port = configService.get<number>("PORT", 3000);
+  const apiPrefix = configService.get<string>("API_PREFIX", "api");
+  const corsOrigin = configService.get<string>("CORS_ORIGIN", "*");
 
   app.setGlobalPrefix(apiPrefix);
 
   app.enableCors({
     origin: corsOrigin,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
   });
 
-  await app.listen(port, '0.0.0.0');
+  await app.listen(port, "0.0.0.0");
 
   console.log(
     `[Worker ${process.pid}] API running on http://localhost:${port}/${apiPrefix}`,
@@ -46,7 +47,7 @@ if (cluster.isPrimary) {
     cluster.fork();
   }
 
-  cluster.on('exit', (worker, code, signal) => {
+  cluster.on("exit", (worker, code, signal) => {
     console.warn(
       `[Worker ${worker.process.pid}] died (code: ${code}, signal: ${signal}). Restarting...`,
     );

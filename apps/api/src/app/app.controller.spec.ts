@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
-describe('AppController', () => {
+describe("AppController", () => {
   let appController: AppController;
 
   beforeEach(async () => {
@@ -14,18 +14,18 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
+  describe("root", () => {
     it('should return "shop-eda API is running"', () => {
-      expect(appController.getHello()).toBe('shop-eda API is running');
+      expect(appController.getHello()).toBe("shop-eda API is running");
     });
   });
 
-  describe('health', () => {
-    it('should return health object', () => {
+  describe("health", () => {
+    it("should return health object", () => {
       const result = appController.getHealth();
-      expect(result).toHaveProperty('status', 'ok');
-      expect(result).toHaveProperty('pid');
-      expect(result).toHaveProperty('uptime');
+      expect(result).toHaveProperty("status", "ok");
+      expect(result).toHaveProperty("pid");
+      expect(result).toHaveProperty("uptime");
     });
   });
 });

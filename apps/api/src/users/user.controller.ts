@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Delete,
   Body,
   Param,
@@ -10,11 +9,12 @@ import {
   HttpCode,
   HttpStatus,
   NotFoundException,
-} from '@nestjs/common';
-import { UserService } from './user.service';
-import { User } from './user.entity';
+  Patch,
+} from "@nestjs/common";
+import { UserService } from "./user.service";
+import { User } from "./user.entity";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -23,36 +23,56 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    const user = await this.userService.findById(id);
-    if (!user) throw new NotFoundException(`User #${id} not found`);
+  @Get(":id")
+  async findById(@Param("id", ParseIntPipe) id: number): Promise<User> {
+    const user = await this.userService.find(id);
+
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
+
     return user;
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() data: { name: string; email: string; birthdate: string; idDocument: string }): Promise<User> {
+  async create(
+    @Body()
+    data: {
+      name: string;
+      email: string;
+      birthdate: string;
+      idDocument: string;
+    },
+  ): Promise<User> {
     return this.userService.create({
       ...data,
       birthdate: new Date(data.birthdate),
-    });
+    } as any);
   }
 
-  @Put(':id')
+  @Patch(":id")
   async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() data: Partial<Pick<User, 'name' | 'email' | 'birthdate' | 'idDocument'>>,
+    @Param("id", ParseIntPipe) id: number,
+    @Body()
+    data: Partial<Pick<User, "name" | "email" | "birthdate" | "idDocument">>,
   ): Promise<User> {
     const user = await this.userService.update(id, data);
-    if (!user) throw new NotFoundException(`User #${id} not found`);
+
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
+
     return user;
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async delete(@Param("id", ParseIntPipe) id: number): Promise<void> {
     const deleted = await this.userService.delete(id);
-    if (!deleted) throw new NotFoundException(`User #${id} not found`);
+
+    if (!deleted) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
   }
 }
