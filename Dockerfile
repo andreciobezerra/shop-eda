@@ -15,10 +15,14 @@ RUN pnpm build
 
 FROM base AS runner
 ENV NODE_ENV=production
+ENV NODE_PATH=/app/node_modules:/app/apps/api/node_modules
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nestjs
-COPY --from=builder /app/apps/api/dist ./dist
-COPY --from=builder /app/apps/api/node_modules ./node_modules
-COPY --from=builder /app/apps/api/package.json ./
+WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/api/package.json ./apps/api/
+RUN pnpm install --prod --frozen-lockfile
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+WORKDIR /app/apps/api
 USER nestjs
 EXPOSE 3000
 CMD ["node", "dist/main"]

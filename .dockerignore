@@ -8,3 +8,5 @@ dist
 *.md
 coverage
 .DS_Store
+postgres_data/
+apps/api/postgres_data
