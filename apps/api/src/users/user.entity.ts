@@ -1,12 +1,11 @@
-import { defineEntity, p } from '@mikro-orm/core';
+import { defineEntity, p } from "@mikro-orm/core";
+import { BaseEntitySchema } from "../shared/entities/base.entity";
 
 const UserSchema = defineEntity({
-  name: 'User',
-  tableName: 'users',
+  name: "User",
+  tableName: "users",
+  extends: BaseEntitySchema,
   properties: {
-    id: p.integer().primary().autoincrement(),
-    createdAt: p.datetime().onCreate(() => new Date()),
-    updatedAt: p.datetime().onCreate(() => new Date()).onUpdate(() => new Date()),
     name: p.string(),
     email: p.string().unique(),
     birthdate: p.datetime(),

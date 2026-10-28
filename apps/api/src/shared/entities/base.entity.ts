@@ -1,13 +1,7 @@
-import { defineEntity, t } from '@mikro-orm/core';
-
-export abstract class BaseEntity {
-  id!: number;
-  createdAt: Date = new Date();
-  updatedAt: Date = new Date();
-}
+import { defineEntity, t } from "@mikro-orm/core";
 
 export const BaseEntitySchema = defineEntity({
-  name: 'BaseEntity',
+  name: "BaseEntity",
   abstract: true,
   properties: {
     id: {
@@ -16,13 +10,17 @@ export const BaseEntitySchema = defineEntity({
       autoincrement: true,
     },
     createdAt: {
-      type: t.date,
+      type: t.datetime,
       onCreate: () => new Date(),
     },
     updatedAt: {
-      type: t.date,
+      type: t.datetime,
       onCreate: () => new Date(),
       onUpdate: () => new Date(),
     },
   },
 });
+
+export class BaseEntity extends BaseEntitySchema.class {}
+
+BaseEntitySchema.setClass(BaseEntity);
