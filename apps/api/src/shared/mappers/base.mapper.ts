@@ -1,6 +1,6 @@
 import { EntityModel } from "../domain/entity.model";
-import { IDto } from "../interfaces/dto.interface";
-import { IMapper } from "../interfaces/mapper.interface";
+import { IDto } from "../dtos/dto.interface";
+import { IMapper } from "../mappers/mapper.interface";
 
 export abstract class BaseMapper<
   T extends EntityModel,

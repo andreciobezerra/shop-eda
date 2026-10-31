@@ -1,7 +1,7 @@
-import { CrudRepository } from "../domain/crud.repository";
+import { CrudRepository } from "../repositories/crud.repository";
 import { EntityModel } from "../domain/entity.model";
-import { IDto, UpdatedDto } from "../interfaces/dto.interface";
-import { IMapper } from "../interfaces/mapper.interface";
+import { IDto, UpdatedDto } from "../dtos/dto.interface";
+import { IMapper } from "../mappers/mapper.interface";
 
 export abstract class CrudService<
   T extends EntityModel,

@@ -1,4 +1,4 @@
-import { CrudRepository } from "../shared/domain/crud.repository";
+import { CrudRepository } from "../shared/repositories/crud.repository";
 import { UserModel } from "./user.model";
 import { CreateUserInput, UpdateUserInput } from "./user.schema";
 

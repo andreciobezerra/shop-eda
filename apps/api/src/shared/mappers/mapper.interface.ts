@@ -1,5 +1,5 @@
 import { EntityModel } from "../domain/entity.model";
-import { IDto } from "./dto.interface";
+import { IDto } from "../dtos/dto.interface";
 
 export interface IMapper<T extends EntityModel, D extends IDto<T>> {
   fromEntity(entity: T): D;
