@@ -1,15 +1,13 @@
-import { Injectable } from "@nestjs/common";
-import { EntityManager } from "@mikro-orm/core";
-import { CrudRepository } from "../shared/repositories/crud.repository";
-import { User } from "./user.entity";
+import { CrudRepository } from "../shared/domain/crud.repository";
+import { UserModel } from "./user.model";
+import { CreateUserInput, UpdateUserInput } from "./user.schema";
 
-@Injectable()
-export class UserRepository extends CrudRepository<User> {
-  constructor(em: EntityManager) {
-    super(em, User);
-  }
-
-  async findByEmail(email: string): Promise<User | null> {
-    return this.em.findOne(User, { email });
-  }
+export interface UserRepository extends CrudRepository<
+  UserModel,
+  CreateUserInput,
+  UpdateUserInput
+> {
+  findByEmail(email: string): Promise<UserModel | null>;
 }
+
+export const UserRepository = Symbol("UserRepository");

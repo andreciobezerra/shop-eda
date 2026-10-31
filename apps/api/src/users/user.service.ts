@@ -1,15 +1,28 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { CrudService } from "../shared/services/crud.service";
-import { User } from "./user.entity";
+import { UserDto } from "./user.dto";
+import { UserMapper } from "./user.mapper";
+import { UserModel } from "./user.model";
 import { UserRepository } from "./user.repository";
+import { CreateUserInput, UpdateUserInput } from "./user.schema";
 
 @Injectable()
-export class UserService extends CrudService<User> {
-  constructor(protected readonly userRepository: UserRepository) {
-    super(userRepository);
+export class UserService extends CrudService<
+  UserModel,
+  UserDto,
+  CreateUserInput,
+  UpdateUserInput
+> {
+  constructor(
+    @Inject(UserRepository) protected readonly userRepository: UserRepository,
+    protected readonly userMapper: UserMapper,
+  ) {
+    super(userRepository, userMapper);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findByEmail(email);
+  async findByEmail(email: string): Promise<UserDto | null> {
+    const user = await this.userRepository.findByEmail(email);
+
+    return user ? this.userMapper.fromEntity(user) : null;
   }
 }

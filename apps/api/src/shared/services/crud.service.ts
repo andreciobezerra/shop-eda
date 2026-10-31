@@ -1,31 +1,48 @@
-import { BaseEntity } from "../entities/base.entity";
-import { CrudRepository } from "../repositories/crud.repository";
-import { FilterQuery, RequiredEntityData } from "@mikro-orm/core";
+import { CrudRepository } from "../domain/crud.repository";
+import { EntityModel } from "../domain/entity.model";
+import { IDto, UpdatedDto } from "../interfaces/dto.interface";
+import { IMapper } from "../interfaces/mapper.interface";
 
-export abstract class CrudService<T extends BaseEntity> {
-  constructor(protected readonly crudRepository: CrudRepository<T>) {}
+export abstract class CrudService<
+  T extends EntityModel,
+  D extends IDto<T>,
+  C,
+  U extends UpdatedDto<T>,
+> {
+  constructor(
+    protected readonly repository: CrudRepository<T, C, U>,
+    protected readonly mapper: IMapper<T, D>,
+  ) {}
 
-  async find(id: number | string): Promise<T | null> {
-    return this.crudRepository.find(id);
+  async find(id: number | string): Promise<D | null> {
+    const entity = await this.repository.find(id);
+
+    return entity ? this.mapper.fromEntity(entity) : null;
   }
 
   async findAll(
-    filters: FilterQuery<T> = {} as FilterQuery<T>,
+    filters: Partial<T> = {},
     limit: number = 10,
     offset: number = 0,
-  ): Promise<T[]> {
-    return this.crudRepository.findAll(filters, limit, offset);
+  ): Promise<D[]> {
+    const entities = await this.repository.findAll(filters, limit, offset);
+
+    return this.mapper.fromEntities(entities);
   }
 
-  async create(data: RequiredEntityData<T>): Promise<T> {
-    return this.crudRepository.create(data);
+  async create(data: C): Promise<D> {
+    const entity = await this.repository.create(data);
+
+    return this.mapper.fromEntity(entity);
   }
 
-  async update(id: number | string, data: Partial<T>): Promise<T | null> {
-    return this.crudRepository.update(id, data);
+  async update(id: number | string, data: U): Promise<D | null> {
+    const entity = await this.repository.update(id, data);
+
+    return entity ? this.mapper.fromEntity(entity) : null;
   }
 
   async delete(id: number | string): Promise<boolean> {
-    return this.crudRepository.delete(id);
+    return this.repository.delete(id);
   }
 }

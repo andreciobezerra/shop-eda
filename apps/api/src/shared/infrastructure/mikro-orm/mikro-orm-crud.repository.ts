@@ -4,9 +4,9 @@ import {
   FilterQuery,
   RequiredEntityData,
 } from "@mikro-orm/core";
-import { BaseEntity } from "../entities/base.entity";
+import { BaseEntity } from "../../entities/base.entity";
 
-export abstract class CrudRepository<T extends BaseEntity> {
+export abstract class MikroOrmCrudRepository<T extends BaseEntity> {
   constructor(
     protected readonly em: EntityManager,
     protected readonly entityName: EntityName<T>,

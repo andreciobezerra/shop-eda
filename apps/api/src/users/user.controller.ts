@@ -11,20 +11,27 @@ import {
   NotFoundException,
   Patch,
 } from "@nestjs/common";
+import { ZodValidationPipe } from "../shared/pipes/zod-validation.pipe";
+import { UserDto } from "./user.dto";
+import {
+  CreateUserInput,
+  createUserSchema,
+  UpdateUserInput,
+  updateUserSchema,
+} from "./user.schema";
 import { UserService } from "./user.service";
-import { User } from "./user.entity";
 
 @Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserDto[]> {
     return this.userService.findAll();
   }
 
   @Get(":id")
-  async findById(@Param("id", ParseIntPipe) id: number): Promise<User> {
+  async findById(@Param("id", ParseIntPipe) id: number): Promise<UserDto> {
     const user = await this.userService.find(id);
 
     if (!user) {
@@ -37,26 +44,16 @@ export class UserController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @Body()
-    data: {
-      name: string;
-      email: string;
-      birthdate: string;
-      idDocument: string;
-    },
-  ): Promise<User> {
-    return this.userService.create({
-      ...data,
-      birthdate: new Date(data.birthdate),
-    } as any);
+    @Body(new ZodValidationPipe(createUserSchema)) data: CreateUserInput,
+  ): Promise<UserDto> {
+    return this.userService.create(data);
   }
 
   @Patch(":id")
   async update(
     @Param("id", ParseIntPipe) id: number,
-    @Body()
-    data: Partial<Pick<User, "name" | "email" | "birthdate" | "idDocument">>,
-  ): Promise<User> {
+    @Body(new ZodValidationPipe(updateUserSchema)) data: UpdateUserInput,
+  ): Promise<UserDto> {
     const user = await this.userService.update(id, data);
 
     if (!user) {
