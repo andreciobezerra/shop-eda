@@ -1,27 +1,33 @@
-import * as Joi from "joi";
+import { z } from "zod";
 
-export interface EnvironmentVariables {
-  NODE_ENV: string;
-  PORT: number;
-  API_PREFIX: string;
-  CORS_ORIGIN: string;
-  DB_HOST: string;
-  DB_PORT: number;
-  DB_USERNAME: string;
-  DB_PASSWORD: string;
-  DB_NAME: string;
-}
-
-export const validationSchema = Joi.object({
-  NODE_ENV: Joi.string()
-    .valid("development", "production", "test")
+export const environmentSchema = z.object({
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
     .default("development"),
-  PORT: Joi.number().default(3000),
-  API_PREFIX: Joi.string().default("api"),
-  CORS_ORIGIN: Joi.string().default("*"),
-  DB_HOST: Joi.string().default("localhost"),
-  DB_PORT: Joi.number().default(5432),
-  DB_USERNAME: Joi.string().default("postgres"),
-  DB_PASSWORD: Joi.string().default("postgres"),
-  DB_NAME: Joi.string().default("shop_eda"),
+  PORT: z.coerce.number().int().positive().default(3000),
+  API_PREFIX: z.string().min(1).default("api"),
+  CORS_ORIGIN: z.string().min(1).default("*"),
+  DB_HOST: z.string().min(1).default("localhost"),
+  DB_PORT: z.coerce.number().int().positive().default(5432),
+  DB_USERNAME: z.string().min(1).default("postgres"),
+  DB_PASSWORD: z.string().min(1).default("postgres"),
+  DB_NAME: z.string().min(1).default("shop_eda"),
 });
+
+export type EnvironmentVariables = z.infer<typeof environmentSchema>;
+
+export function validate(
+  config: Record<string, unknown>,
+): EnvironmentVariables {
+  const result = environmentSchema.safeParse(config);
+
+  if (!result.success) {
+    const details = result.error.issues
+      .map((issue) => `${issue.path.join(".") || "config"}: ${issue.message}`)
+      .join("; ");
+
+    throw new Error(`Environment validation failed: ${details}`);
+  }
+
+  return result.data;
+}
